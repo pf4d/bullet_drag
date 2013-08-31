@@ -1,9 +1,12 @@
-#!/usr/bin/env python
-from Cartridge import *
-import model
-from Ballistics import *
-from functions import *
-from numpy import array
+import sys
+src_directory = '../'
+sys.path.append(src_directory)
+
+from src.Cartridge  import *
+from src.Ballistics import *
+from src.functions  import *
+from numpy          import array
+import src.model
 
 # Initial Conditions
 name    = '7.92 x 57 mm 198 gr Bullet'

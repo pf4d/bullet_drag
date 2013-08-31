@@ -1,9 +1,12 @@
-#!/usr/bin/env python
-from Cartridge import *
-import model
-from Ballistics import *
-from functions import *
-from numpy import array
+import sys
+src_directory = '../'
+sys.path.append(src_directory)
+
+from src.Cartridge  import *
+from src.Ballistics import *
+from src.functions  import *
+from numpy          import array
+import src.model
 
 # Initial Conditions
 name    = 'XM193 5.56x45 mm 55 grain bullet'

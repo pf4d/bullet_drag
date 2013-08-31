@@ -1,19 +1,18 @@
-from scipy.integrate.ode import *
-from scipy.interpolate import interp1d
-
 import sys
 sys.path.append("../ODE Solvers/")
-from Predictor import *
-from RungeKutta import *
-from EulerRichardson import *
-from Euler import *
-from EulerCromer import *
 
-from Cartridge import *
+from Predictor           import *
+from RungeKutta          import *
+from EulerRichardson     import *
+from Euler               import *
+from EulerCromer         import *
+from scipy.integrate.ode import *
+from scipy.interpolate   import interp1d
+from Cartridge           import *
+from numpy               import *
+
 import functions as func
 import random
-
-from numpy import *
 import matplotlib.pyplot as plt
 
 class Ballistics:
