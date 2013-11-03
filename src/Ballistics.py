@@ -1,15 +1,15 @@
 import sys
-sys.path.append("../ODE Solvers/")
+sys.path.append("../../ode_solvers/src")
 
-from Predictor           import *
-from RungeKutta          import *
-from EulerRichardson     import *
-from Euler               import *
-from EulerCromer         import *
-from scipy.integrate.ode import *
-from scipy.interpolate   import interp1d
-from Cartridge           import *
-from numpy               import *
+from Predictor            import *
+from RungeKutta           import *
+from EulerRichardson      import *
+from Euler                import *
+from EulerCromer          import *
+from scipy.integrate._ode import *
+from scipy.interpolate    import interp1d
+from Cartridge            import *
+from numpy                import *
 
 import functions as func
 import random
@@ -17,7 +17,8 @@ import matplotlib.pyplot as plt
 
 class Ballistics:
 
-  def __init__(self, cart, intMethod, t0, tf, dt, intDt, model='g', rho=1.225):
+  def __init__(self, cart, intMethod, t0, tf, dt, intDt, y0=0.0,
+               model='g', rho=1.225):
     '''
     Purpose:
       Initialize the variables and data.
@@ -31,6 +32,7 @@ class Ballistics:
       tf        - end time in seconds
       dt        - time step to call integrator in seconds
       intDt     - time step for integrator to integrate in seconds
+      y0        - initial height of bullet
       model     - model to use {g or e}
       rho       - density of fluid (air) in kg/m^3
     '''
@@ -47,6 +49,7 @@ class Ballistics:
     self.vx           = zeros(self.n)
     self.vy           = zeros(self.n)
     self.x0           = []
+    self.y0           = y0
 
 
   def model_integrate(self, cart):
@@ -150,7 +153,7 @@ class Ballistics:
     return x, y, v, yErr, vErr
 
 
-  def plot(self, cart):
+  def plot(self, cart, units='m'):
     '''
     Purpose:
       plot the trajectory and velocity for the data and model given.
@@ -160,6 +163,20 @@ class Ballistics:
     fig = plt.figure(figsize=(14,10))
     ax = fig.add_subplot(211)
     
+    if units != 'm':
+      x = func.m_to_yards(x)
+      y = func.m_to_inches(y)
+      v = func.m_to_ft(v)
+      traj_x = func.m_to_yards(traj_x)
+      traj   = func.m_to_inches(traj)
+      xunit = 'yards'
+      yunit = 'inches'
+      vunit = 'feet/s'
+    else:
+      xunit = 'm'
+      yunit = 'm'
+      vunit = 'm/s'
+
     if len(cart.traj) > 1:
       plt.plot(cart.traj_x, 
                cart.traj, 'r.', label='Data')
@@ -168,9 +185,10 @@ class Ballistics:
              'Mean-Squared Err: %f m' % yErr)
     plt.text(min(x) + 10, min(y) + (max(y) - min(y))/100.0, 
              'Muzzle Velocity: %.0f m/s' % cart.mv)
-    plt.legend()
-    plt.xlabel('Distance (m)')
-    plt.ylabel('Drop (m)')
+    leg = plt.legend(loc='lower left')
+    leg.get_frame().set_alpha(0.5)
+    plt.xlabel('Distance (%s)' % xunit)
+    plt.ylabel('Drop (%s)' % yunit)
     plt.title('Trajectory for ' + cart.name)
     plt.grid()
     
@@ -182,29 +200,42 @@ class Ballistics:
       plt.text(min(x)+10, min(v)+10 , 'Mean-Squared Err: %f m/s' % (vErr))
     
     plt.plot(x, v, label=self.intMethod, lw=2)
-    plt.legend()
-    plt.xlabel('Distance (m)')
-    plt.ylabel('Velocity (m/s)')
+    plt.xlabel('Distance (%s)' % xunit)
+    plt.ylabel('Velocity (%s)' % vunit)
     plt.title('Velocity for ' + cart.name)
     plt.grid()
     
     plt.show()
 
 
-  def plot_all(self):
+  def plot_all(self, units='m'):
     '''
     Purpose:
       plot the trajectory and velocity for the data and model given.
     '''
-    fig = plt.figure(figsize=(14,10))
+    fig = plt.figure(figsize=(12,6))
     ax1 = fig.add_subplot(211)
     ax2 = fig.add_subplot(212)
     
     for i in range(self.n):
       x, y, v, yErr, vErr = self.calc_error(self.cart[i])
+    
+      if units != 'm':
+        x = func.m_to_yards(x)
+        y = func.m_to_inches(y)
+        v = func.m_to_ft(v)
+        traj_x = func.m_to_yards(self.cart[i].x)
+        traj   = func.m_to_inches(self.cart[i].traj)
+        xunit = 'yards'
+        yunit = 'inches'
+        vunit = 'feet/s'
+      else:
+        xunit = 'm'
+        yunit = 'm'
+        vunit = 'm/s'
       
       if len(self.cart[i].traj) > 1:
-        ax1.plot(self.cart[i].traj_x, self.cart[i].traj,
+        ax1.plot(traj_x, traj,
                  'r.', label='%s Data' % self.cart[i].name)
       ax1.plot(x, y, lw=2, 
                label=self.cart[i].name)
@@ -215,15 +246,15 @@ class Ballistics:
       ax2.plot(x, v, lw=2, 
                label=self.cart[i].name)
     
-    ax1.legend()
-    ax1.set_xlabel('Distance (m)')
-    ax1.set_ylabel('Drop (m)')
-    ax1.set_title('Trajectories')
+    leg = ax1.legend(loc='lower left')
+    leg.get_frame().set_alpha(0.5)
+    ax1.set_xlabel('Distance (%s)' % xunit)
+    ax1.set_ylabel('Drop (%s)' % yunit)
     ax1.grid()
-    ax2.legend()
-    ax2.set_xlabel('Distance (m)')
-    ax2.set_ylabel('Velocity (m/s)')
-    ax2.set_title('Velocities')
+    leg = ax2.legend()
+    leg.get_frame().set_alpha(0.5)
+    ax2.set_xlabel('Distance (%s)' % xunit)
+    ax2.set_ylabel('Velocity (%s)' % vunit)
     ax2.grid()
     
     plt.show()

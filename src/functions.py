@@ -191,6 +191,9 @@ def cm_to_m(cm):
 def m_to_ft(m):
     return m * 3.2808399
 
+def m_to_inches(m):
+    return m * 39.3701
+
 def m_to_yards(m):
     return m * 1.0936133
 

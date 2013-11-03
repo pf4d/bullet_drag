@@ -59,8 +59,12 @@ class Cartridge:
         
         # if traject ry information is provided :
         if traj != None:
-          self.traj  = array(traj)
-          self.x     = array(x)
+          if type(traj) == float or type(traj) == int:
+            self.traj  = array([traj])
+            self.x     = array([0.0])
+          else:
+            self.traj  = array(traj)
+            self.x     = array(x)
         else:
           self.traj  = zeros(1)
           self.x     = zeros(1)
