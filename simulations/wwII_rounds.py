@@ -62,6 +62,6 @@ ball    = Ballistics(carts, 'Predictor', 0.0, 1.0, 0.001, 0.001)
 ball.hit_target(300)
 
 # Plot the results :
-ball.plot_all()
+ball.plot_all(units='i')
 
 
