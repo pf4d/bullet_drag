@@ -137,7 +137,21 @@ class Ballistics:
     '''
     for i in range(self.n):
       self.find_theta(self.cart[i], rng, tol, zero)
-  
+ 
+  def fire_round(self, cart, theta, tol=1e-5, zero=0.0): 
+    '''
+    PURPOSE:
+      Method to fire the rifle specified theta.
+    INPUT:
+      theta - the angle from the horizon to fire the rifle.
+      zero  - distance from zero (default 0.0)
+    OUTCOME:
+      trajectory saved to Ballistics.x as a numpy array [x, vx, y, vy]
+    '''
+    cart.y = []  # initialize the history for (new) shot
+    vx, vy  = func.vel_comp(cart.mv, theta)
+    cart.y0 = [0.0, vx, cart.traj[0], vy]
+    self.model_integrate(cart)
   
   def calc_error(self, cart):
     

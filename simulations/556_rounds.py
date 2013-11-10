@@ -16,6 +16,13 @@ caliber = 0.224
 bc      = 0.250
 XM193   = Cartridge(name, mass, caliber, mv, bc, traj=0.0) 
 
+name    = 'Remington .22 Golden Bullet 36 grain bullet'
+mass    = 36
+mv      = ft_to_m(1280)
+caliber = 0.223
+bc      = 0.124
+Gold22  = Cartridge(name, mass, caliber, mv, bc, traj=0.0) 
+
 name    = 'XM855 5.56x45 mm 62 grain bullet'
 mass    = 62
 mv      = ft_to_m(3090)
@@ -44,15 +51,18 @@ XM855   = Cartridge(name, mass, caliber, mv, bc, traj=traj, x=x)
 
 # array of cartridges :
 #carts   = array([XM855, XM193])
-carts   = array([XM855])
+carts   = array([XM193, Gold22])
 
 # Ballistics model for round 
 # (cart, intMethod, t0, tf, dt, intDt) :
-ball    = Ballistics(carts, 'Predictor', t0=0.0, tf=0.168, 
+ball    = Ballistics(carts, 'Predictor', t0=0.0, tf=0.4, 
                      dt=0.001, intDt=0.001)
 
 # Zero the rifle :
-ball.hit_target(300)
+ball.hit_target(yards_to_m(100))
+
+# Fire the 556 round at the same angle as the .22 to find range adjustment:
+ball.fire_round(XM193, 0.00399388307618) 
 
 # Plot the results :
 ball.plot_all(units='i')
