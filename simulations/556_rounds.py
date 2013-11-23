@@ -57,16 +57,18 @@ bc      = 0.307
 XM855   = Cartridge(name, mass, caliber, mv, bc, traj=traj, x=x)
 
 # array of cartridges :
+carts   = array([XM855])
 #carts   = array([XM855, XM193])
-carts   = array([XM193, Gold22, tula])
+#carts   = array([XM193, Gold22, tula])
 
 # Ballistics model for round 
 # (cart, intMethod, t0, tf, dt, intDt) :
-ball    = Ballistics(carts, 'Predictor', t0=0.0, tf=0.4, 
+ball    = Ballistics(carts, 'Predictor', t0=0.0, tf=0.18, 
                      dt=0.001, intDt=0.001)
 
 # Zero the rifle :
-ball.hit_target(yards_to_m(300))
+#ball.hit_target(yards_to_m(100))
+ball.hit_target(300)
 
 # Fire the 556 round at the same angle as the .22 to find range adjustment:
 #ball.fire_round(XM193, 0.00399388307618) 
